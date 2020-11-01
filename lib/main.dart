@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:weather_app/domain/users_weather.dart';
 
 void main() {
   runApp(MyApp());
@@ -51,16 +55,24 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
+  UsersWeather weather;
+  final String apiKey = 'f9fd0206614f868c220fb05c85fcd255';
 
-  void _incrementCounter() {
+  @override
+  void initState() {
+    getWeatherData();
+    super.initState();
+  }
+
+  void getWeatherData() async {
+//      http.Response response = await http.get('http://pro.openweathermap.org/data/2.5/forecast/hourly?q=London&appid=$apiKey&lang=ru&units=metric');
+    http.Response response = await http.get(
+        'https://api.openweathermap.org/data/2.5/onecall?lat=49.988358&lon=36.232845&exclude=minutely,alerts&appid=$apiKey&lang=ru&units=metric');
+    print(response.statusCode);
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      weather = UsersWeather.fromJson(jsonDecode(response.body));
     });
+    print(weather);
   }
 
   @override
@@ -97,21 +109,39 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text('Your City: '),
+                  Text(weather.currentWeather.parametersTemperature.currentTemp
+                      .toString())
+                ]),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text('Feels Like: '),
+                  Text(weather
+                      .currentWeather.parametersTemperature.feelsLikeTemp
+                      .toString())
+                ]),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text('Sunrise in : '),
+                  Text(
+                      '${weather.currentWeather.sunnyDay.sunriseTime.hour}:${weather.currentWeather.sunnyDay.sunriseTime.minute}')
+                ]),
+            Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Text('Senset in : '),
+                  Text(
+                      '${weather.currentWeather.sunnyDay.sunsetTime.hour}:${weather.currentWeather.sunnyDay.sunsetTime.minute}')
+                ]),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
