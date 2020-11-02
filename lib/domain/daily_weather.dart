@@ -15,7 +15,7 @@ class DailyWeather {
       this.parametersTemperature, this.additionalWeatherParameters);
 
   DailyWeather.fromJson(Map<String, dynamic> json)
-      : date = DateTime.parse(json['dt'].toString()),
+      : date = new DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000),
         sunnyDay = SunnyDay.fromJson(json),
         parametersTemperature = ParametersTemperatureDaily.fromJson(json['temp']),
         additionalWeatherParameters =
