@@ -13,7 +13,7 @@ class HourlyWeather {
       this.additionalWeatherParameters);
 
   HourlyWeather.fromJson(Map<String, dynamic> json)
-      : date = DateTime.parse(json['dt'].toString()),
+      : date = new DateTime.fromMillisecondsSinceEpoch(json['dt'] * 1000),
         parametersTemperature = ParametersTemperatureDefault.fromJson(json),
         additionalWeatherParameters =
             AdditionalWeatherParameters.fromJson(json),

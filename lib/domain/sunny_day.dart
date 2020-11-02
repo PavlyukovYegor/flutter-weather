@@ -5,6 +5,6 @@ class SunnyDay {
   SunnyDay(this.sunriseTime, this.sunsetTime);
 
   SunnyDay.fromJson(Map<String, dynamic> json):
-      sunriseTime = DateTime.parse(json['sunrise'].toString()),
-      sunsetTime = DateTime.parse(json['sunset'].toString());
+      sunriseTime = new DateTime.fromMillisecondsSinceEpoch(json['sunrise'] * 1000),
+      sunsetTime = new DateTime.fromMillisecondsSinceEpoch(json['sunset'] * 1000);
 }
